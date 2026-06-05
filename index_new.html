@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>바이럴 채널 부킹 시스템</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;background:#f5f5f5;font-size:13px}
+:root{
+  --color-text-primary:#1a1a1a;--color-text-secondary:#6b7280;--color-text-tertiary:#9ca3af;
+  --color-text-success:#16a34a;--color-text-danger:#dc2626;--color-text-warning:#d97706;--color-text-info:#2563eb;
+  --color-background-primary:#ffffff;--color-background-secondary:#f9fafb;--color-background-danger:#fef2f2;--color-background-success:#f0fdf4;--color-background-warning:#fffbeb;--color-background-info:#eff6ff;
+  --color-border-tertiary:#e5e7eb;--color-border-secondary:#d1d5db;--color-border-focus:#6366f1;
+  --border-radius-md:6px;--border-radius-lg:10px;--font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+.app-header{background:#fff;border-bottom:0.5px solid #e5e7eb;padding:12px 24px;display:flex;align-items:center;gap:10px}
+.app-header h1{font-size:15px;font-weight:600}
+.app-body{max-width:1100px;margin:0 auto;padding:24px 16px}
+.tab-bar{display:flex;gap:4px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:20px}
+.tab{padding:8px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:var(--color-text-secondary);background:none;border-top:none;border-left:none;border-right:none}
+.tab.active{color:var(--color-text-primary);border-bottom-color:#6366f1;font-weight:500}
+.panel{display:none}.panel.active{display:block}
+.section-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em}
+.card{background:#fff;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px 20px;margin-bottom:12px}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px}
+.badge-up{background:var(--color-background-success);color:var(--color-text-success)}
+.badge-mid{background:var(--color-background-warning);color:var(--color-text-warning)}
+.badge-dn{background:var(--color-background-danger);color:var(--color-text-danger)}
+.badge-reels{background:var(--color-background-info);color:var(--color-text-info)}
+.badge-banner{background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-secondary)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:500;font-size:12px;color:var(--color-text-secondary);padding:6px 8px;border-bottom:0.5px solid var(--color-border-tertiary)}
+td{padding:6px 8px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.toolbar{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.update-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;font-size:13px;cursor:pointer;border-radius:var(--border-radius-md);white-space:nowrap;background:#fff;border:0.5px solid var(--color-border-secondary)}
+.update-btn:hover{background:#f9fafb}
+.timestamp{font-size:12px;color:var(--color-text-tertiary);white-space:nowrap}
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:nowrap}
+.filter-bar select{font-size:13px;padding:5px 10px;border-radius:var(--border-radius-md);height:32px;flex:1;border:0.5px solid var(--color-border-secondary);background:#fff}
+.timer-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;background:var(--color-background-warning);color:var(--color-text-warning);white-space:nowrap}
+.combo-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:14px;background:#fff}
+.combo-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:#f9fafb;border-bottom:0.5px solid var(--color-border-tertiary)}
+.confirm-btn{font-size:12px;padding:5px 12px;cursor:pointer;border-radius:var(--border-radius-md);background:#fff;border:0.5px solid var(--color-border-secondary)}
+.confirm-btn:hover{background:#f0fdf4;border-color:var(--color-text-success);color:var(--color-text-success)}
+.kakao-editable{width:100%;font-size:13px;line-height:1.8;padding:14px 16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:#f9fafb;resize:vertical;min-height:120px;font-family:inherit;color:var(--color-text-primary);margin-bottom:8px}
+.copy-btn{font-size:12px;padding:4px 10px;cursor:pointer;border-radius:var(--border-radius-md);display:inline-flex;align-items:center;gap:4px;background:#fff;border:0.5px solid var(--color-border-secondary)}
+.editable{border:none;background:transparent;font-size:13px;color:inherit;width:100%;padding:0;cursor:pointer;font-family:inherit}
+.editable:focus{outline:1px solid var(--color-border-focus);border-radius:4px;background:#f9fafb;padding:1px 4px}
+.editable-num{border:none;background:transparent;font-size:13px;color:inherit;width:80px;padding:0;cursor:pointer;font-family:inherit}
+.editable-num:focus{outline:1px solid var(--color-border-focus);border-radius:4px;background:#f9fafb;padding:1px 4px}
+.spinning{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.pulsing{animation:pulse 1s ease-in-out infinite}
+.sheets-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.sheets-row input{flex:1;font-size:13px;padding:5px 10px;border-radius:var(--border-radius-md);height:32px;border:0.5px solid var(--color-border-secondary)}
+.dash-grid{display:grid;grid-template-columns:2fr 2fr 1fr;gap:10px;margin-bottom:16px}
+.dash-card{background:#f9fafb;border-radius:var(--border-radius-md);padding:14px 16px;border:0.5px solid var(--color-border-tertiary)}
+.dash-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:8px;font-weight:500}
+.dash-val{font-size:28px;font-weight:600}
+.top3-row{display:flex;align-items:center;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.top3-row:last-child{border-bottom:none}
+.top3-name{font-size:12px;font-weight:500;flex:1;margin:0 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top3-cpv{font-size:12px;font-weight:600;color:var(--color-text-success);flex-shrink:0}
+.del-btn{font-size:11px;padding:2px 8px;cursor:pointer;border-radius:var(--border-radius-md);color:var(--color-text-danger);border:0.5px solid var(--color-text-danger);background:none;white-space:nowrap}
+.cancel-btn{font-size:11px;padding:3px 10px;cursor:pointer;border-radius:var(--border-radius-md);color:var(--color-text-warning);border:0.5px solid var(--color-text-warning);background:none;white-space:nowrap}
+.booking-combo-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:16px;background:#fff}
+.booking-combo-header{padding:12px 16px;background:#f9fafb;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:12px}
+.add-filter-row{display:flex;gap:6px;padding:10px 14px;background:#f9fafb;border-top:0.5px solid var(--color-border-tertiary);flex-wrap:wrap;align-items:center}
+.add-filter-row input,.add-filter-row select{font-size:12px;padding:4px 6px;border-radius:var(--border-radius-md);height:28px;border:0.5px solid var(--color-border-secondary);background:#fff}
+.add-result-row{padding:0 14px 10px;background:#f9fafb}
+.chip-btn{font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:#fff;display:inline-flex;align-items:center;gap:4px}
+.chip-btn:hover{background:#f0f9ff;border-color:var(--color-text-info)}
+.agency-divider{border:none;border-top:1.5px solid var(--color-border-secondary);margin:24px 0 16px}
+.agency-block{margin-bottom:20px}
+.agency-title{font-size:15px;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.mat-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:3px 10px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:#f9fafb;cursor:grab;user-select:none;white-space:nowrap}
+.mat-chip.conflict{border-color:var(--color-text-danger);color:var(--color-text-danger)}
+.drop-zone{min-height:32px;min-width:140px;border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:3px 8px;display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+.drop-zone.over{background:var(--color-background-info);border-color:var(--color-text-info)}
+.drop-zone.locked{border-style:solid;background:transparent}
+.pool-area{display:flex;flex-wrap:wrap;gap:6px;padding:10px 0;min-height:40px}
+.lock-btn{font-size:12px;padding:4px 12px;cursor:pointer;border-radius:var(--border-radius-md);background:var(--color-background-success);color:var(--color-text-success);border:0.5px solid var(--color-text-success)}
+.unlock-btn{font-size:12px;padding:4px 12px;cursor:pointer;border-radius:var(--border-radius-md);background:none;color:var(--color-text-warning);border:0.5px solid var(--color-text-warning)}
+.warn-row td{background:#fef2f2}
+input[type=number],input[type=text],input[type=date],select{background:#fff}
+</style>
+</head>
+<body>
+<div class="app-header">
+  <i class="ti ti-brand-instagram" style="font-size:18px;color:#6366f1"></i>
+  <h1>바이럴 채널 부킹 시스템</h1>
+</div>
+<div class="app-body">
+<div class="tab-bar">
+  <button class="tab active" onclick="switchTab('efficiency')">채널 효율 관리</button>
+  <button class="tab" onclick="switchTab('listup')">채널 리스트업</button>
+  <button class="tab" onclick="switchTab('booking')">부킹 자동화</button>
+  <button class="tab" onclick="switchTab('material')">소재 배정</button>
+</div>
+
+<!-- 탭1: 채널 효율 관리 -->
+<div id="tab-efficiency" class="panel active">
+  <div class="toolbar">
+    <button class="update-btn" onclick="runUpdate()" id="update-btn"><i class="ti ti-refresh" id="refresh-icon"></i> 효율 업데이트</button>
+    <span id="timer-area"></span>
+    <span class="timestamp" id="update-time">마지막 업데이트: -</span>
+  </div>
+  <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:14px;flex-wrap:wrap">
+    <div style="position:relative">
+      <button onclick="toggleDropdown('dd-format')" style="font-size:13px;padding:5px 10px;border-radius:var(--border-radius-md);height:32px;border:0.5px solid var(--color-border-secondary);background:#fff;cursor:pointer;display:flex;align-items:center;gap:4px">포맷 <span id="dd-format-label" style="color:var(--color-text-info);font-weight:600"></span> ▾</button>
+      <div id="dd-format" style="display:none;position:absolute;top:36px;left:0;background:#fff;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 12px;z-index:100;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.08)">
+        <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px;cursor:pointer"><input type="checkbox" value="릴스" onchange="renderTable()" class="filter-format-cb"> 릴스</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" value="배너" onchange="renderTable()" class="filter-format-cb"> 배너</label>
+      </div>
+    </div>
+    <div style="position:relative">
+      <button onclick="toggleDropdown('dd-grade')" style="font-size:13px;padding:5px 10px;border-radius:var(--border-radius-md);height:32px;border:0.5px solid var(--color-border-secondary);background:#fff;cursor:pointer;display:flex;align-items:center;gap:4px">효율 <span id="dd-grade-label" style="color:var(--color-text-info);font-weight:600"></span> ▾</button>
+      <div id="dd-grade" style="display:none;position:absolute;top:36px;left:0;background:#fff;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 12px;z-index:100;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.08)">
+        <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px;cursor:pointer"><input type="checkbox" value="상" onchange="renderTable()" class="filter-grade-cb"> 상</label>
+        <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px;cursor:pointer"><input type="checkbox" value="중" onchange="renderTable()" class="filter-grade-cb"> 중</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" value="하" onchange="renderTable()" class="filter-grade-cb"> 하</label>
+      </div>
+    </div>
+    <div style="position:relative">
+      <button onclick="toggleDropdown('dd-agency')" style="font-size:13px;padding:5px 10px;border-radius:var(--border-radius-md);height:32px;border:0.5px solid var(--color-border-secondary);background:#fff;cursor:pointer;display:flex;align-items:center;gap:4px">업체 <span id="dd-agency-label" style="color:var(--color-text-info);font-weight:600"></span> ▾</button>
+      <div id="dd-agency" style="display:none;position:absolute;top:36px;left:0;background:#fff;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 12px;z-index:100;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.08);max-height:200px;overflow-y:auto" id="dd-agency-list">
+      </div>
+    </div>
+    <select id="sort-by" onchange="renderTable()" style="font-size:13px;padding:5px 10px;border-radius:var(--border-radius-md);height:32px;border:0.5px solid var(--color-border-secondary);background:#fff"><option value="cpv">CPV 낮은 순</option><option value="price">단가 낮은 순</option><option value="views">평균 조회수 높은 순</option><option value="channel">채널명 순</option><option value="agency">업체별</option></select>
+  </div>
+  <div class="dash-grid">
+    <div class="dash-card"><div class="dash-label"><span class="badge badge-reels" style="font-size:10px;margin-right:4px">릴스</span>CPV 낮은 순 TOP 3</div><div id="top3-reels"><div style="font-size:12px;color:var(--color-text-tertiary)">데이터를 불러오면 표시돼요</div></div></div>
+    <div class="dash-card"><div class="dash-label"><span class="badge badge-banner" style="font-size:10px;margin-right:4px">배너</span>CPV 낮은 순 TOP 3</div><div id="top3-banner"><div style="font-size:12px;color:var(--color-text-tertiary)">데이터를 불러오면 표시돼요</div></div></div>
+    <div class="dash-card" style="display:flex;flex-direction:column;justify-content:center"><div class="dash-label">전체 채널</div><div class="dash-val" id="s-total">-</div></div>
+  </div>
+  <div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:8px"><i class="ti ti-pencil" style="font-size:11px"></i> 셀을 클릭하면 바로 수정할 수 있어요</div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table><thead><tr><th>업체명</th><th>포맷</th><th>효율</th><th>채널명</th><th>단가</th><th>평균 조회수</th><th>조회당 비용</th></tr></thead>
+    <tbody id="channel-tbody"><tr><td colspan="7" style="text-align:center;color:var(--color-text-tertiary);padding:32px">구글 시트를 연동하거나 샘플 데이터를 불러와주세요</td></tr></tbody></table>
+  </div>
+  <div style="margin-top:16px">
+    <div class="section-title">구글 스프레드시트 연동</div>
+    <div class="sheets-row">
+      <input type="text" id="sheets-url" placeholder="구글 스프레드시트 URL을 붙여넣어주세요">
+      <button class="update-btn" onclick="syncSheets()" id="sync-btn"><i class="ti ti-table-import" id="sync-icon"></i> 동기화</button>
+      <button onclick="loadSampleData()" style="font-size:12px;padding:5px 12px;cursor:pointer;border-radius:var(--border-radius-md);color:var(--color-text-secondary);white-space:nowrap;background:#fff;border:0.5px solid var(--color-border-secondary)">샘플 데이터로 테스트</button>
+    </div>
+    <div style="font-size:11px;color:var(--color-text-tertiary);line-height:1.8">① 공유 설정 → <b>"링크가 있는 모든 사용자 - 뷰어"</b><br>② 1행 헤더: <b>채널명 / 업체명 / 포맷 / 단가 / 평균조회수</b> (순서 달라도 됨)</div>
+    <div id="sync-status" style="font-size:12px;margin-top:6px"></div>
+  </div>
+</div>
+
+<!-- 탭2: 채널 리스트업 -->
+<div id="tab-listup" class="panel">
+  <div class="card">
+    <div class="section-title" style="margin-bottom:14px">조건 설정</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">일 예산 범위 (원) <span style="color:var(--color-text-tertiary)">— 선택</span></div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input id="budget-min-display" placeholder="최소" oninput="formatInput(this,'budget-min-val')" style="flex:1;font-size:13px;padding:6px 10px;border-radius:var(--border-radius-md);height:34px;border:0.5px solid var(--color-border-secondary)">
+          <input type="hidden" id="budget-min-val">
+          <span style="font-size:12px;color:var(--color-text-secondary)">~</span>
+          <input id="budget-max-display" placeholder="최대" oninput="formatInput(this,'budget-max-val')" style="flex:1;font-size:13px;padding:6px 10px;border-radius:var(--border-radius-md);height:34px;border:0.5px solid var(--color-border-secondary)">
+          <input type="hidden" id="budget-max-val">
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">일 목표 조회수 <span style="color:var(--color-text-tertiary)">— 선택</span></div>
+        <input id="views-display" placeholder="비워두면 조건 없음" oninput="formatInput(this,'views-val')" style="width:100%;font-size:13px;padding:6px 10px;border-radius:var(--border-radius-md);height:34px;border:0.5px solid var(--color-border-secondary)">
+        <input type="hidden" id="views-val">
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">일 목표 조회당 비용 (CPV) <span style="color:var(--color-text-tertiary)">— 선택</span></div>
+        <input type="number" id="target-cpv" placeholder="예: 2.5 (이하인 채널만)" step="0.1" min="0" style="width:100%;font-size:13px;padding:6px 10px;border-radius:var(--border-radius-md);height:34px;border:0.5px solid var(--color-border-secondary)">
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">포맷</div>
+        <select id="target-format" style="width:100%;font-size:13px;padding:6px 10px;border-radius:var(--border-radius-md);height:34px;border:0.5px solid var(--color-border-secondary)">
+          <option value="all">릴스 + 배너 혼합</option><option value="릴스">릴스만</option><option value="배너">배너만</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">추천 조합 수</div>
+        <input type="number" id="combo-count" placeholder="3" min="1" max="10" style="width:100%;font-size:13px;padding:6px 10px;border-radius:var(--border-radius-md);height:34px;border:0.5px solid var(--color-border-secondary)">
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">채널 수 조건</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <select id="channel-count-type" style="font-size:13px;padding:6px 8px;border-radius:var(--border-radius-md);height:34px;border:0.5px solid var(--color-border-secondary)">
+            <option value="max">이내</option><option value="exact">정확히</option><option value="min">이상</option>
+          </select>
+          <input type="number" id="channel-count-n" placeholder="10" min="1" max="99" style="width:70px;font-size:13px;padding:6px 10px;border-radius:var(--border-radius-md);height:34px;border:0.5px solid var(--color-border-secondary)">
+          <span style="font-size:13px;color:var(--color-text-secondary)">개</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+      <input type="checkbox" id="allow-duplicates" checked style="width:15px;height:15px;cursor:pointer">
+      <label for="allow-duplicates" style="font-size:13px;color:var(--color-text-secondary);cursor:pointer">조합 간 채널 중복 허용</label>
+    </div>
+    <button class="update-btn" onclick="generateCombos()"><i class="ti ti-sparkles" style="font-size:15px"></i> 조합 추천받기 ↗</button>
+  </div>
+  <div id="combo-list"></div>
+</div>
+
+<!-- 탭3: 부킹 자동화 -->
+<div id="tab-booking" class="panel">
+  <div id="booking-empty" style="color:var(--color-text-tertiary);font-size:13px;padding:24px 0">채널 리스트업 탭에서 조합을 확정하면 여기에 표시돼요.</div>
+  <div id="booking-combos"></div>
+  <hr class="agency-divider" id="agency-divider" style="display:none">
+  <div id="agency-section" style="display:none">
+    <div class="section-title" style="font-size:15px;font-weight:700;color:var(--color-text-primary);margin-bottom:16px">업체별 분류</div>
+    <div id="agency-list"></div>
+  </div>
+  <div id="kakao-section" style="display:none;margin-top:24px">
+    <div class="section-title">카톡 문안</div>
+    <button onclick="generateKakao()" class="update-btn" style="margin-bottom:12px"><i class="ti ti-message"></i> 업체별 문안 생성</button>
+    <div id="kakao-area"></div>
+  </div>
+</div>
+
+<!-- 탭4: 소재 배정 -->
+<div id="tab-material" class="panel">
+  <div id="material-empty" style="color:var(--color-text-tertiary);font-size:13px;padding:24px 0">채널 리스트업 탭에서 조합을 확정하면 여기에 표시돼요.</div>
+  <div id="material-content" style="display:none">
+    <div class="card">
+      <div class="section-title" style="margin-bottom:8px">소재 파일 업로드</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px">영상/이미지 파일을 선택하면 파일명으로 소재가 등록돼요. 업로드 후 <b>자동 배정</b>을 누르면 중복 없이 배정해드려요.</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input type="file" id="file-upload" multiple accept="video/*,image/*" onchange="handleFiles(this.files)" style="font-size:13px">
+        <button class="update-btn" onclick="autoAssign()"><i class="ti ti-wand"></i> 자동 배정</button>
+        <button onclick="clearPool()" style="font-size:12px;padding:5px 10px;cursor:pointer;border-radius:var(--border-radius-md);color:var(--color-text-secondary);border:0.5px solid var(--color-border-secondary);background:#fff">소재 초기화</button>
+      </div>
+      <div style="margin-top:10px">
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:6px">등록된 소재 <span id="pool-count" style="font-weight:600">0</span>개 — 드래그해서 채널에 배정하세요</div>
+        <div id="pool-area" class="pool-area"><span style="font-size:12px;color:var(--color-text-tertiary)">업로드된 소재가 없어요</span></div>
+      </div>
+    </div>
+    <div id="assign-area"></div>
+  </div>
+</div>
+</div>
+
+<script>
+let channelDB=[],confirmedCombos=[];
+let timerInterval=null,timerSeconds=0,savedSheetUrl='https://docs.google.com/spreadsheets/d/16xWi4OcZMxpjgIppot8XRFQS2hTpi2U4OBAphSQH_CQ/edit?usp=sharing';
+let filePool=[],assignments={},lockedCombos={},dragSrc=null;
+
+function formatInput(el,hiddenId){const raw=el.value.replace(/[^0-9]/g,'');el.value=raw?parseInt(raw).toLocaleString('ko-KR'):'';document.getElementById(hiddenId).value=raw;}
+function switchTab(t){document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelector(`[onclick="switchTab('${t}')"]`).classList.add('active');document.getElementById('tab-'+t).classList.add('active');if(t==='material')renderMaterialTab();}
+function parseCSV(text){return text.trim().split('\n').map(line=>{const cols=[];let cur='';let inQ=false;for(const c of line){if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){cols.push(cur.trim());cur='';}else cur+=c;}cols.push(cur.trim());return cols;});}
+function findColIndex(headers,candidates){for(const c of candidates){const idx=headers.findIndex(h=>h.replace(/\s/g,'').toLowerCase()===c.replace(/\s/g,'').toLowerCase());if(idx!==-1)return idx;}return -1;}
+async function syncSheets(url){
+  const inputUrl=url||document.getElementById('sheets-url').value.trim();
+  if(!inputUrl){setStatus('URL을 입력해주세요.','warn');return;}
+  const match=inputUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+  if(!match){setStatus('올바른 구글 스프레드시트 URL이 아닙니다.','error');return;}
+  const icon=document.getElementById('sync-icon'),btn=document.getElementById('sync-btn');
+  icon.classList.add('spinning');btn.disabled=true;setStatus('동기화 중...','info');
+  try{
+    const res=await fetch(`https://docs.google.com/spreadsheets/d/${match[1]}/export?format=csv&gid=0`);
+    if(!res.ok)throw new Error('시트를 불러올 수 없어요. 공유 설정을 확인해주세요.');
+    const rows=parseCSV(await res.text());
+    if(rows.length<2)throw new Error('데이터가 없습니다.');
+    const h=rows[0].map(x=>x.trim());
+    const iCh=findColIndex(h,['채널명','channel']),iAg=findColIndex(h,['업체명','업체','agency']),iFm=findColIndex(h,['포맷','format']),iPr=findColIndex(h,['단가','price']),iVi=findColIndex(h,['평균조회수','평균 조회수','조회수','views']);
+    channelDB=rows.slice(1).map(c=>({channel:(c[iCh]||'').trim(),agency:(c[iAg]||'').trim(),format:(c[iFm]||'릴스').trim(),price:parseInt((c[iPr]||'0').replace(/,/g,''))||0,views:parseInt((c[iVi]||'0').replace(/,/g,''))||0})).filter(r=>r.channel);
+    savedSheetUrl=inputUrl;updateAgencyFilter();renderTable();updateStats();
+    setStatus(`✓ ${channelDB.length}개 채널 동기화 완료 · ${new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}`,'success');
+  }catch(e){setStatus('오류: '+e.message,'error');}
+  finally{icon.classList.remove('spinning');btn.disabled=false;}
+}
+function setStatus(msg,type){const el=document.getElementById('sync-status');el.style.color={success:'var(--color-text-success)',error:'var(--color-text-danger)',warn:'var(--color-text-warning)',info:'var(--color-text-secondary)'}[type];el.textContent=msg;}
+function loadSampleData(){channelDB=[{channel:'ufo_Red',agency:'에이전시A',format:'릴스',price:300000,views:52000},{channel:'ufo_Blue',agency:'에이전시A',format:'릴스',price:250000,views:61000},{channel:'ufo_Blue',agency:'에이전시A',format:'배너',price:200000,views:84000},{channel:'meme_daily',agency:'에이전시B',format:'릴스',price:150000,views:38000},{channel:'trendy_kr',agency:'에이전시B',format:'릴스',price:250000,views:67000},{channel:'trendy_kr',agency:'에이전시B',format:'배너',price:180000,views:52000},{channel:'viral_hub',agency:'에이전시C',format:'릴스',price:500000,views:120000},{channel:'daily_fun',agency:'에이전시C',format:'배너',price:120000,views:31000},{channel:'hot_clips',agency:'에이전시A',format:'릴스',price:180000,views:44000}];updateAgencyFilter();renderTable();updateStats();}
+function toggleDropdown(id){const el=document.getElementById(id);const isOpen=el.style.display!=='none';document.querySelectorAll('[id^="dd-"]').forEach(d=>{if(!d.id.endsWith('-label')&&!d.id.endsWith('-list'))d.style.display='none';});el.style.display=isOpen?'none':'block';}
+document.addEventListener('click',function(e){if(!e.target.closest('[style*="position:relative"]'))document.querySelectorAll('[id^="dd-format"],[id^="dd-grade"],[id^="dd-agency"]').forEach(d=>{if(!d.id.endsWith('-label'))d.style.display='none';});});
+function updateAgencyFilter(){const agencies=[...new Set(channelDB.map(r=>r.agency))];const container=document.getElementById('dd-agency');const checked=getChecked('filter-agency-cb');container.innerHTML=agencies.map(a=>`<label style="display:flex;align-items:center;gap:6px;margin-bottom:6px;cursor:pointer"><input type="checkbox" value="${a}" onchange="renderTable()" class="filter-agency-cb" ${checked.includes(a)?'checked':''}> ${a}</label>`).join('');}
+function getChecked(cls){return [...document.querySelectorAll('.'+cls+':checked')].map(el=>el.value);}
+function updateFilterLabels(){const fmt=getChecked('filter-format-cb');const grade=getChecked('filter-grade-cb');const agency=getChecked('filter-agency-cb');document.getElementById('dd-format-label').textContent=fmt.length?`(${fmt.length})`:'';document.getElementById('dd-grade-label').textContent=grade.length?`(${grade.length})`:'';document.getElementById('dd-agency-label').textContent=agency.length?`(${agency.length})`:'';}
+function computeCPV(r){return r.views&&r.views>0?r.price/r.views:null;}
+function gradeFromCPV(c){if(c===null)return '-';if(c<=2)return '상';if(c<=5)return '중';return '하';}
+function badgeClass(g){if(g==='상')return 'badge-up';if(g==='중')return 'badge-mid';if(g==='하')return 'badge-dn';return '';}
+function startTimer(){timerSeconds=0;document.getElementById('timer-area').innerHTML=`<span class="timer-badge"><i class="ti ti-clock pulsing" style="font-size:13px"></i> <span id="timer-count">0</span>초</span>`;timerInterval=setInterval(()=>{timerSeconds++;const el=document.getElementById('timer-count');if(el)el.textContent=timerSeconds;},1000);}
+function stopTimer(){clearInterval(timerInterval);timerInterval=null;document.getElementById('timer-area').innerHTML='';}
+function runUpdate(){if(timerInterval)return;const icon=document.getElementById('refresh-icon'),btn=document.getElementById('update-btn');icon.classList.add('spinning');btn.disabled=true;startTimer();(savedSheetUrl?syncSheets(savedSheetUrl):Promise.resolve()).then(()=>{channelDB.forEach(r=>{const base=r.views||50000;const s=Array.from({length:10},()=>base*(0.7+Math.random()*0.6));const med=[...s].sort((a,b)=>a-b)[4];const f=s.filter(v=>v<med*3);r.views=Math.round(f.reduce((a,b)=>a+b,0)/f.length);});document.getElementById('update-time').textContent='마지막 업데이트: '+new Date().toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});icon.classList.remove('spinning');btn.disabled=false;stopTimer();renderTable();updateStats();});}
+function renderTop3(elId,format){const medals=['🥇','🥈','🥉'];const top3=channelDB.filter(r=>r.format===format).map(r=>({...r,cpv:computeCPV(r)})).filter(r=>r.cpv!==null).sort((a,b)=>a.cpv-b.cpv).slice(0,3);document.getElementById(elId).innerHTML=top3.length?top3.map((r,i)=>`<div class="top3-row"><span style="font-size:11px;width:20px;flex-shrink:0">${medals[i]}</span><span class="top3-name">${r.channel}</span><span class="top3-cpv">${r.cpv.toFixed(2)}</span></div>`).join(''):'<div style="font-size:12px;color:var(--color-text-tertiary)">데이터 없음</div>';}
+function updateStats(){document.getElementById('s-total').textContent=channelDB.length;renderTop3('top3-reels','릴스');renderTop3('top3-banner','배너');}
+function renderTable(){const fmts=getChecked('filter-format-cb');const grades=getChecked('filter-grade-cb');const agencies=getChecked('filter-agency-cb');const sort=document.getElementById('sort-by').value;updateFilterLabels();let rows=channelDB.filter(r=>(fmts.length===0||fmts.includes(r.format))&&(grades.length===0||grades.includes(gradeFromCPV(computeCPV(r))))&&(agencies.length===0||agencies.includes(r.agency)));if(sort==='cpv')rows.sort((a,b)=>(computeCPV(a)||999)-(computeCPV(b)||999));else if(sort==='price')rows.sort((a,b)=>a.price-b.price);else if(sort==='views')rows.sort((a,b)=>(b.views||0)-(a.views||0));else if(sort==='channel')rows.sort((a,b)=>a.channel.localeCompare(b.channel));else rows.sort((a,b)=>a.agency.localeCompare(b.agency)||a.channel.localeCompare(b.channel));const tbody=document.getElementById('channel-tbody');if(!rows.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--color-text-tertiary);padding:24px">조건에 맞는 채널이 없습니다</td></tr>';return;}tbody.innerHTML=rows.map(r=>{const idx=channelDB.indexOf(r),cpv=computeCPV(r),g=gradeFromCPV(cpv);return `<tr><td><input class="editable" value="${r.agency}" onchange="channelDB[${idx}].agency=this.value;updateAgencyFilter();updateStats()" onclick="this.select()"></td><td><select style="font-size:12px;padding:2px 4px;border-radius:4px;height:26px;border:none;background:transparent;cursor:pointer" onchange="channelDB[${idx}].format=this.value;renderTable();updateStats()"><option value="릴스" ${r.format==='릴스'?'selected':''}>릴스</option><option value="배너" ${r.format==='배너'?'selected':''}>배너</option></select></td><td><span class="badge ${badgeClass(g)}">${g}</span></td><td><input class="editable" style="font-weight:500" value="${r.channel}" onchange="channelDB[${idx}].channel=this.value" onclick="this.select()"></td><td><input class="editable-num" value="${r.price}" type="number" onchange="channelDB[${idx}].price=parseInt(this.value)||0;renderTable();updateStats()" onclick="this.select()"></td><td><input class="editable-num" value="${r.views||''}" type="number" placeholder="-" onchange="channelDB[${idx}].views=parseInt(this.value)||0;renderTable();updateStats()" onclick="this.select()"></td><td style="font-weight:500">${cpv?cpv.toFixed(2):'-'}</td></tr>`;}).join('');}
+function generateCombos(){
+  if(!channelDB.length){alert('채널 효율 관리 탭에서 먼저 데이터를 불러와주세요.');return;}
+  const budgetMin=parseInt(document.getElementById('budget-min-val').value)||null;
+  const budgetMax=parseInt(document.getElementById('budget-max-val').value)||null;
+  const targetViews=parseInt(document.getElementById('views-val').value)||null;
+  const targetCPV=parseFloat(document.getElementById('target-cpv').value)||null;
+  const fmt=document.getElementById('target-format').value;
+  const comboCount=parseInt(document.getElementById('combo-count').value)||3;
+  const countType=document.getElementById('channel-count-type').value;
+  const countN=parseInt(document.getElementById('channel-count-n').value)||10;
+  const allowDuplicates=document.getElementById('allow-duplicates').checked;
+  let pool=channelDB.filter(r=>{
+    if(fmt!=='all'&&r.format!==fmt)return false;
+    if(computeCPV(r)===null)return false;
+    return true;
+  }).sort((a,b)=>computeCPV(a)-computeCPV(b));
+  const usedChannels=new Set();
+  const rawCombos=[];
+  for(let c=0;c<comboCount;c++){
+    let selected=[],totalCost=0,totalViews=0;
+    const shuffled=c===0?[...pool]:[...pool].sort(()=>Math.random()-0.3);
+    for(const ch of shuffled){
+      if(!allowDuplicates&&usedChannels.has(ch.channel+'_'+ch.format))continue;
+      if(budgetMax&&totalCost+ch.price>budgetMax*1.1)continue;
+      if(targetViews&&totalViews>=targetViews)break;
+      if((countType==='max'||countType==='exact')&&selected.length>=countN)break;
+      selected.push(ch);
+      totalCost+=ch.price;
+      totalViews+=(ch.views||0);
+    }
+    if(budgetMin&&totalCost<budgetMin)continue;
+    if(selected.length){
+      if(!allowDuplicates)selected.forEach(ch=>usedChannels.add(ch.channel+'_'+ch.format));
+      const comboCPV=totalViews>0?totalCost/totalViews:null;
+      rawCombos.push({id:Date.now()+c,name:`조합 ${c+1}`,date:'',channels:[...selected],originalChannels:[...selected],comboCPV});
+    }
+  }
+  // 목표 CPV 있으면 가장 근접한 순으로 정렬, 없으면 그대로
+  const combos=targetCPV?[...rawCombos].sort((a,b)=>Math.abs((a.comboCPV||999)-targetCPV)-Math.abs((b.comboCPV||999)-targetCPV)):rawCombos;
+  window._combos=combos;renderComboList();
+}
+function comboSummary(channels){const cost=channels.reduce((s,r)=>s+r.price,0);const views=channels.reduce((s,r)=>s+(r.views||0),0);return `${channels.length}개 채널 · ${cost.toLocaleString()}원 · ${(views/10000).toFixed(1)}만 조회`;}
+let comboSortState={};
+function sortCombo(ci,key){const state=comboSortState[ci]||{key:null,asc:true};const asc=state.key===key?!state.asc:true;comboSortState[ci]={key,asc};const ch=window._combos[ci].channels;ch.sort((a,b)=>{let va,vb;if(key==='channel'){va=a.channel;vb=b.channel;}else if(key==='agency'){va=a.agency;vb=b.agency;}else if(key==='format'){va=a.format;vb=b.format;}else if(key==='grade'){const o={'상':0,'중':1,'하':2,'-':3};va=o[gradeFromCPV(computeCPV(a))]??3;vb=o[gradeFromCPV(computeCPV(b))]??3;}else if(key==='price'){va=a.price;vb=b.price;}else if(key==='views'){va=a.views||0;vb=b.views||0;}else if(key==='cpv'){va=computeCPV(a)||999;vb=computeCPV(b)||999;}if(typeof va==='string')return asc?va.localeCompare(vb):vb.localeCompare(va);return asc?va-vb:vb-va;});document.getElementById(`listup-tbody-${ci}`).innerHTML=renderListupRows(ch,ci);renderComboHeaders(ci);}
+function sortArrow(ci,key){const s=comboSortState[ci];if(!s||s.key!==key)return'<span style="color:#ccc;font-size:10px">↕</span>';return s.asc?'<span style="color:#6366f1;font-size:10px">↑</span>':'<span style="color:#6366f1;font-size:10px">↓</span>';}
+function renderComboHeaders(ci){const el=document.getElementById(`listup-thead-${ci}`);if(el)el.innerHTML=comboHeaderHTML(ci);}
+function comboHeaderHTML(ci){return`<tr><th style="cursor:pointer" onclick="sortCombo(${ci},'agency')">업체 ${sortArrow(ci,'agency')}</th><th style="cursor:pointer" onclick="sortCombo(${ci},'format')">포맷 ${sortArrow(ci,'format')}</th><th style="cursor:pointer" onclick="sortCombo(${ci},'grade')">효율 ${sortArrow(ci,'grade')}</th><th style="cursor:pointer" onclick="sortCombo(${ci},'channel')">채널명 ${sortArrow(ci,'channel')}</th><th style="cursor:pointer" onclick="sortCombo(${ci},'price')">단가 ${sortArrow(ci,'price')}</th><th style="cursor:pointer" onclick="sortCombo(${ci},'views')">평균 조회수 ${sortArrow(ci,'views')}</th><th style="cursor:pointer" onclick="sortCombo(${ci},'cpv')">조회당 비용 ${sortArrow(ci,'cpv')}</th><th></th></tr>`;}
+function renderComboList(){const combos=window._combos||[];document.getElementById('combo-list').innerHTML=combos.length?combos.map((combo,ci)=>`<div class="combo-card" id="combo-${combo.id}"><div class="combo-header"><div><span style="font-weight:500;font-size:14px">${combo.name}</span><span id="listup-summary-${ci}" style="font-size:12px;color:var(--color-text-secondary);margin-left:10px">${comboSummary(combo.channels)}</span></div><div style="display:flex;gap:6px;align-items:center"><button onclick="resetCombo(${ci})" style="font-size:11px;padding:3px 10px;cursor:pointer;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:none;color:var(--color-text-secondary)">↩ 되돌리기</button><button class="confirm-btn" id="confirm-btn-${ci}" onclick="confirmCombo(${ci})">확정 ✓</button></div></div><div style="padding:0"><table style="font-size:12px"><thead id="listup-thead-${ci}">${comboHeaderHTML(ci)}</thead><tbody id="listup-tbody-${ci}">${renderListupRows(combo.channels,ci)}</tbody></table><div class="add-filter-row"><span style="font-size:12px;color:var(--color-text-secondary);white-space:nowrap">채널 추가</span><select id="lu-fmt-${ci}" onchange="renderListupAddList(${ci})"><option value="all">전체 포맷</option><option value="릴스">릴스</option><option value="배너">배너</option></select><select id="lu-price-type-${ci}" onchange="renderListupAddList(${ci})"><option value="max">단가 이내</option><option value="exact">단가 정확히</option><option value="min">단가 이상</option></select><input type="number" id="lu-price-val-${ci}" placeholder="금액" oninput="renderListupAddList(${ci})" style="width:80px"><select id="lu-views-type-${ci}" onchange="renderListupAddList(${ci})"><option value="min">조회수 이상</option><option value="exact">조회수 정확히</option><option value="max">조회수 이내</option></select><input type="number" id="lu-views-val-${ci}" placeholder="조회수" oninput="renderListupAddList(${ci})" style="width:80px"></div><div class="add-result-row" id="lu-add-result-${ci}"><div style="font-size:12px;color:var(--color-text-tertiary);padding:6px 0">조건을 입력하면 추가할 채널 목록이 표시돼요</div></div></div></div>`).join(''):'<p style="color:var(--color-text-secondary);font-size:13px;padding:12px 0">조건에 맞는 조합을 찾지 못했어요.</p>';}
+function renderListupRows(channels,ci){return channels.map((r,ri)=>{const cpv=computeCPV(r),g=gradeFromCPV(cpv);return `<tr><td>${r.agency}</td><td><span class="badge ${r.format==='릴스'?'badge-reels':'badge-banner'}" style="font-size:10px">${r.format}</span></td><td><span class="badge ${badgeClass(g)}" style="font-size:10px">${g}</span></td><td style="font-weight:500">${r.channel}</td><td>${r.price.toLocaleString()}원</td><td>${(r.views||0).toLocaleString()}</td><td>${cpv?cpv.toFixed(2):'-'}</td><td><button class="del-btn" onclick="deleteListupChannel(${ci},${ri})">삭제</button></td></tr>`;}).join('');}
+function deleteListupChannel(ci,ri){window._combos[ci].channels.splice(ri,1);document.getElementById(`listup-tbody-${ci}`).innerHTML=renderListupRows(window._combos[ci].channels,ci);document.getElementById(`listup-summary-${ci}`).textContent=comboSummary(window._combos[ci].channels);}
+function resetCombo(ci){window._combos[ci].channels=[...window._combos[ci].originalChannels];document.getElementById(`listup-tbody-${ci}`).innerHTML=renderListupRows(window._combos[ci].channels,ci);document.getElementById(`listup-summary-${ci}`).textContent=comboSummary(window._combos[ci].channels);renderListupAddList(ci);}
+function renderListupAddList(ci){const fmt=document.getElementById(`lu-fmt-${ci}`)?.value||'all';const priceType=document.getElementById(`lu-price-type-${ci}`)?.value||'max';const priceVal=parseInt(document.getElementById(`lu-price-val-${ci}`)?.value)||null;const viewsType=document.getElementById(`lu-views-type-${ci}`)?.value||'min';const viewsVal=parseInt(document.getElementById(`lu-views-val-${ci}`)?.value)||null;if(!priceVal&&!viewsVal){document.getElementById(`lu-add-result-${ci}`).innerHTML='<div style="font-size:12px;color:var(--color-text-tertiary);padding:6px 0">조건을 입력하면 추가할 채널 목록이 표시돼요</div>';return;}const filtered=channelDB.filter(r=>{if(fmt!=='all'&&r.format!==fmt)return false;if(priceVal){if(priceType==='max'&&r.price>priceVal)return false;if(priceType==='min'&&r.price<priceVal)return false;if(priceType==='exact'&&r.price!==priceVal)return false;}if(viewsVal){if(viewsType==='min'&&(r.views||0)<viewsVal)return false;if(viewsType==='max'&&(r.views||0)>viewsVal)return false;if(viewsType==='exact'&&(r.views||0)!==viewsVal)return false;}return true;});const el=document.getElementById(`lu-add-result-${ci}`);if(!filtered.length){el.innerHTML='<div style="font-size:12px;color:var(--color-text-tertiary);padding:6px 0">조건에 맞는 채널이 없어요</div>';return;}el.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 0">${filtered.map(r=>{const cpv=computeCPV(r);return `<button class="chip-btn" onclick="addListupChannel(${ci},${channelDB.indexOf(r)})"><span class="badge ${r.format==='릴스'?'badge-reels':'badge-banner'}" style="font-size:9px;padding:1px 5px">${r.format}</span>${r.channel} · ${r.price.toLocaleString()}원 · ${(r.views||0).toLocaleString()}조회${cpv?' · CPV '+cpv.toFixed(1):''}</button>`;}).join('')}</div>`;}
+function addListupChannel(ci,dbIdx){if(dbIdx<0||!channelDB[dbIdx])return;window._combos[ci].channels.push({...channelDB[dbIdx]});document.getElementById(`listup-tbody-${ci}`).innerHTML=renderListupRows(window._combos[ci].channels,ci);document.getElementById(`listup-summary-${ci}`).textContent=comboSummary(window._combos[ci].channels);}
+function confirmCombo(ci){const combo=window._combos[ci];if(!combo)return;const existing=confirmedCombos.findIndex(c=>c.id===combo.id);if(existing>=0){confirmedCombos[existing]=JSON.parse(JSON.stringify(combo));}else{confirmedCombos.push(JSON.parse(JSON.stringify(combo)));}const btn=document.getElementById(`confirm-btn-${ci}`);if(btn){btn.textContent='확정됨 ✓';btn.style.opacity='0.5';}renderBookingTab();}
+function cancelCombo(id){const idx=confirmedCombos.findIndex(c=>c.id===id);if(idx>=0)confirmedCombos.splice(idx,1);renderBookingTab();}
+const DUPE_COLORS=['#ef4444','#f97316','#8b5cf6','#06b6d4','#10b981','#f59e0b','#ec4899','#6366f1'];
+let bookingSortState={};
+function sortBooking(ci,key){const state=bookingSortState[ci]||{key:null,asc:true};const asc=state.key===key?!state.asc:true;bookingSortState[ci]={key,asc};const ch=confirmedCombos[ci].channels;ch.sort((a,b)=>{let va,vb;if(key==='channel'){va=a.channel;vb=b.channel;}else if(key==='agency'){va=a.agency;vb=b.agency;}else if(key==='format'){va=a.format;vb=b.format;}else if(key==='grade'){const o={'상':0,'중':1,'하':2,'-':3};va=o[gradeFromCPV(computeCPV(a))]??3;vb=o[gradeFromCPV(computeCPV(b))]??3;}else if(key==='price'){va=a.price;vb=b.price;}else if(key==='views'){va=a.views||0;vb=b.views||0;}else if(key==='cpv'){va=computeCPV(a)||999;vb=computeCPV(b)||999;}if(typeof va==='string')return asc?va.localeCompare(vb):vb.localeCompare(va);return asc?va-vb:vb-va;});renderBookingTab();}
+function bookingSortArrow(ci,key){const s=bookingSortState[ci];if(!s||s.key!==key)return'<span style="color:#ccc;font-size:10px">↕</span>';return s.asc?'<span style="color:#6366f1;font-size:10px">↑</span>':'<span style="color:#6366f1;font-size:10px">↓</span>';}
+function getDupeColorMap(){const chCount={};confirmedCombos.forEach(combo=>{combo.channels.forEach(ch=>{const k=ch.channel+'__'+ch.format;chCount[k]=(chCount[k]||new Set());chCount[k].add(combo.id);});});const dupeKeys=Object.entries(chCount).filter(([k,s])=>s.size>1).map(([k,s])=>({key:k,combos:[...s].sort().join('_')}));const groupMap={};dupeKeys.forEach(({key,combos})=>{if(!groupMap[combos])groupMap[combos]=[];groupMap[combos].push(key);});const colorMap={};Object.values(groupMap).forEach((keys,i)=>{keys.forEach(k=>colorMap[k]=DUPE_COLORS[i%DUPE_COLORS.length]);});return colorMap;}
+function addBookingChannel(ci){const ch=prompt('추가할 채널명 입력:');if(!ch)return;const found=channelDB.find(r=>r.channel===ch.trim());if(!found){alert('채널DB에 없는 채널이에요.');return;}confirmedCombos[ci].channels.push({...found});renderBookingTab();}
+function deleteBookingChannel(ci,ri){confirmedCombos[ci].channels.splice(ri,1);renderBookingTab();}
+function renderBookingTab(){const has=confirmedCombos.length>0;document.getElementById('booking-empty').style.display=has?'none':'block';document.getElementById('agency-divider').style.display=has?'block':'none';document.getElementById('agency-section').style.display=has?'block':'none';document.getElementById('kakao-section').style.display=has?'block':'none';if(!has){document.getElementById('booking-combos').innerHTML='';return;}const colorMap=getDupeColorMap();document.getElementById('booking-combos').innerHTML=confirmedCombos.map((combo,ci)=>{return `<div class="booking-combo-card"><div class="booking-combo-header"><div style="flex:1"><span style="font-weight:500;font-size:14px">${combo.name}</span><span style="font-size:12px;color:var(--color-text-secondary);margin-left:10px">${comboSummary(combo.channels)}</span></div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:var(--color-text-secondary)">업로드 날짜</span><input type="date" value="${combo.date||''}" onchange="confirmedCombos[${ci}].date=this.value;renderAgencySection()" style="font-size:12px;padding:4px 8px;border-radius:var(--border-radius-md);height:30px;border:0.5px solid var(--color-border-secondary)"><button class="cancel-btn" onclick="cancelCombo(${combo.id})">확정 취소</button></div></div><table style="font-size:12px"><thead><tr><th style="cursor:pointer" onclick="sortBooking(${ci},'agency')">업체 ${bookingSortArrow(ci,'agency')}</th><th style="cursor:pointer" onclick="sortBooking(${ci},'format')">포맷 ${bookingSortArrow(ci,'format')}</th><th style="cursor:pointer" onclick="sortBooking(${ci},'grade')">효율 ${bookingSortArrow(ci,'grade')}</th><th style="cursor:pointer" onclick="sortBooking(${ci},'channel')">채널명 ${bookingSortArrow(ci,'channel')}</th><th style="cursor:pointer" onclick="sortBooking(${ci},'price')">단가 ${bookingSortArrow(ci,'price')}</th><th style="cursor:pointer" onclick="sortBooking(${ci},'views')">평균 조회수 ${bookingSortArrow(ci,'views')}</th><th style="cursor:pointer" onclick="sortBooking(${ci},'cpv')">조회당 비용 ${bookingSortArrow(ci,'cpv')}</th><th></th></tr></thead><tbody>${combo.channels.map((r,ri)=>{const cpv=computeCPV(r),g=gradeFromCPV(cpv);const dupeColor=colorMap[r.channel+'__'+r.format];return `<tr><td>${r.agency}</td><td><span class="badge ${r.format==='릴스'?'badge-reels':'badge-banner'}" style="font-size:10px">${r.format}</span></td><td><span class="badge ${badgeClass(g)}" style="font-size:10px">${g}</span></td><td style="font-weight:500;${dupeColor?`color:${dupeColor}`:''}">${r.channel}${dupeColor?` <span style="font-size:10px">●</span>`:''}</td><td>${r.price.toLocaleString()}원</td><td>${(r.views||0).toLocaleString()}</td><td>${cpv?cpv.toFixed(2):'-'}</td><td><button class="del-btn" onclick="deleteBookingChannel(${ci},${ri})">삭제</button></td></tr>`;}).join('')}</tbody></table><div style="padding:8px 12px;border-top:0.5px solid var(--color-border-tertiary);background:#f9fafb"><button onclick="addBookingChannel(${ci})" style="font-size:12px;padding:4px 10px;cursor:pointer;border-radius:var(--border-radius-md);background:#fff;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary)">+ 채널 추가</button></div></div>`;}).join('');renderAgencySection();}
+function renderAgencySection(){const byAgency={};confirmedCombos.forEach(combo=>{combo.channels.forEach(ch=>{if(!byAgency[ch.agency])byAgency[ch.agency]=[];byAgency[ch.agency].push({...ch,comboName:combo.name,date:combo.date||''});});});Object.values(byAgency).forEach(arr=>arr.sort((a,b)=>(a.date||'').localeCompare(b.date||'')));document.getElementById('agency-list').innerHTML=Object.entries(byAgency).map(([agency,chs])=>`<div class="agency-block"><div class="agency-title">${agency}</div><table style="font-size:13px"><thead><tr><th>포맷</th><th>효율</th><th>채널명</th><th>단가</th><th>평균 조회수</th><th>조회당 비용</th><th>조합</th><th>날짜</th></tr></thead><tbody>${chs.map(ch=>{const cpv=computeCPV(ch),g=gradeFromCPV(cpv);const dateStr=ch.date?new Date(ch.date).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric',weekday:'short'}):'미정';return `<tr><td><span class="badge ${ch.format==='릴스'?'badge-reels':'badge-banner'}" style="font-size:10px">${ch.format}</span></td><td><span class="badge ${badgeClass(g)}" style="font-size:10px">${g}</span></td><td style="font-weight:500">${ch.channel}</td><td>${ch.price.toLocaleString()}원</td><td>${(ch.views||0).toLocaleString()}</td><td>${cpv?cpv.toFixed(2):'-'}</td><td style="color:var(--color-text-secondary)">${ch.comboName}</td><td>${dateStr}</td></tr>`;}).join('')}</tbody></table></div>`).join('');}
+function generateKakao(){if(!confirmedCombos.length)return;const byAgency={};confirmedCombos.forEach(combo=>{const dateKey=combo.date||'날짜미정';combo.channels.forEach(ch=>{if(!byAgency[ch.agency])byAgency[ch.agency]={};if(!byAgency[ch.agency][dateKey])byAgency[ch.agency][dateKey]=[];byAgency[ch.agency][dateKey].push({channel:ch.channel,format:ch.format});});});const fmtDate=(d)=>d!=='날짜미정'?new Date(d).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric',weekday:'short'}):d;document.getElementById('kakao-area').innerHTML=Object.entries(byAgency).map(([agency,byDate])=>{const allChs=Object.values(byDate).flat();const hasR=allChs.some(c=>c.format==='릴스'),hasB=allChs.some(c=>c.format==='배너');const fmtText=hasR&&hasB?'릴스/배너':hasR?'릴스':'배너';const sortedDates=Object.keys(byDate).filter(d=>d!=='날짜미정').sort();const dateRange=sortedDates.length>=2?`${fmtDate(sortedDates[0])},${fmtDate(sortedDates[sortedDates.length-1])}`:sortedDates.length===1?fmtDate(sortedDates[0]):'날짜미정';const dateLines=sortedDates.map(d=>`${fmtDate(d)}\n${byDate[d].map(c=>`${c.channel} (${c.format})`).join('\n')}`).join('\n\n');const msg=`담당자님! 안녕하세요:)\n${dateRange} 18시 이후, 하기 사항으로 ${fmtText} 업로드 가능한 일정 있을지 문의드립니다:)\n\n${dateLines}`;const safeId=agency.replace(/[^a-zA-Z0-9가-힣]/g,'_');return `<div style="margin-bottom:20px"><div style="font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:8px">${agency}</div><textarea id="kakao-text-${safeId}" class="kakao-editable">${msg}</textarea><button class="copy-btn" onclick="copyKakao('kakao-text-${safeId}')"><i class="ti ti-copy" style="font-size:13px"></i> 복사</button></div>`;}).join('');}
+function copyKakao(id){const el=document.getElementById(id);if(!el)return;navigator.clipboard.writeText(el.value).then(()=>{const btn=el.nextElementSibling;btn.innerHTML='<i class="ti ti-check" style="font-size:13px"></i> 복사됨';setTimeout(()=>btn.innerHTML='<i class="ti ti-copy" style="font-size:13px"></i> 복사',2000);});}
+function normalize(name){return name.replace(/\.[^.]+$/,'').replace(/[\s_]*\d+\s*$/,'').replace(/\s+/g,' ').trim().toLowerCase();}
+function normalizeCh(ch){return(ch.channel+'_'+ch.format).toLowerCase();}
+function slotKey(comboId,ch){return`${comboId}__${ch.channel}__${ch.format}__${ch.date||''}`;}
+function esc(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+function handleFiles(files){for(const f of files){if(!filePool.find(x=>x.name===f.name))filePool.push({name:f.name,normalized:normalize(f.name)});}renderPool();renderAssignArea();}
+function clearPool(){filePool=[];assignments={};document.getElementById('file-upload').value='';renderPool();renderAssignArea();}
+function autoAssign(){if(!filePool.length){alert('소재를 먼저 업로드해주세요.');return;}const slots=[];confirmedCombos.forEach(combo=>{if(lockedCombos[combo.id])return;combo.channels.forEach(ch=>slots.push({key:slotKey(combo.id,ch),combo,ch}));});slots.forEach(s=>{assignments[s.key]=null;});const channelUsed={};confirmedCombos.forEach(combo=>{if(!lockedCombos[combo.id])return;combo.channels.forEach(ch=>{const k=slotKey(combo.id,ch);const fn=assignments[k];if(fn){const nc=normalizeCh(ch);if(!channelUsed[nc])channelUsed[nc]=new Set();channelUsed[nc].add(normalize(fn));}});});const usedFiles=new Set();for(const slot of slots){const nc=normalizeCh(slot.ch);if(!channelUsed[nc])channelUsed[nc]=new Set();const available=filePool.filter(f=>!usedFiles.has(f.name)&&!channelUsed[nc].has(f.normalized));if(available.length){const chosen=available[0];assignments[slot.key]=chosen.name;usedFiles.add(chosen.name);channelUsed[nc].add(chosen.normalized);}else assignments[slot.key]=null;}renderPool();renderAssignArea();}
+function checkConflict(comboId,ch,filename){const myNorm=normalize(filename),myNc=normalizeCh(ch);for(const combo of confirmedCombos){for(const och of combo.channels){const k=slotKey(combo.id,och);if(k===slotKey(comboId,ch))continue;if(normalizeCh(och)!==myNc)continue;const assigned=assignments[k];if(assigned&&normalize(assigned)===myNorm)return true;}}return false;}
+function renderPool(){document.getElementById('pool-count').textContent=filePool.length;const assignedFiles=new Set(Object.values(assignments).filter(Boolean));const area=document.getElementById('pool-area');if(!filePool.length){area.innerHTML='<span style="font-size:12px;color:var(--color-text-tertiary)">업로드된 소재가 없어요</span>';return;}area.innerHTML=filePool.map(f=>`<div class="mat-chip" draggable="true" style="${assignedFiles.has(f.name)?'opacity:.35;text-decoration:line-through':''}" ondragstart="onDragStart(event,null,'${esc(f.name)}')" ondragend="onDragEnd()">📄 ${f.name}</div>`).join('');}
+function renderAssignArea(){const el=document.getElementById('assign-area');if(!confirmedCombos.length){el.innerHTML='';return;}el.innerHTML=confirmedCombos.map(combo=>{const locked=!!lockedCombos[combo.id];const dateStr=combo.date?new Date(combo.date).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric',weekday:'short'}):'날짜미정';return `<div style="margin-bottom:24px"><div style="font-size:14px;font-weight:600;margin-bottom:10px;padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between"><span>${combo.name} <span style="font-size:12px;font-weight:400;color:var(--color-text-secondary)">${dateStr}</span></span>${locked?`<button class="unlock-btn" onclick="unlockCombo(${combo.id})">확정 취소</button>`:`<button class="lock-btn" onclick="lockCombo(${combo.id})">확정</button>`}</div><div class="card" style="padding:0;overflow:hidden"><table><thead><tr><th>업체</th><th>포맷</th><th>채널명</th><th>CPV</th><th>소재명</th><th style="font-size:11px">충돌</th></tr></thead><tbody>${combo.channels.map(ch=>{const k=slotKey(combo.id,ch);const cpv=ch.views>0?(ch.price/ch.views).toFixed(2):'-';const assigned=assignments[k]||null;const conflict=assigned?checkConflict(combo.id,ch,assigned):false;return `<tr class="${conflict?'warn-row':''}"><td>${ch.agency}</td><td><span class="badge ${ch.format==='릴스'?'badge-reels':'badge-banner'}" style="font-size:10px">${ch.format}</span></td><td style="font-weight:500">${ch.channel}</td><td>${cpv}</td><td><div class="drop-zone ${locked?'locked':''}" id="dz-${esc(k)}" ${locked?'':`ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="onDrop(event,'${esc(k)}')"`}>${assigned?`<div class="mat-chip ${conflict?'conflict':''}" draggable="${locked?'false':'true'}" ${locked?'':`ondragstart="onDragStart(event,'${esc(k)}','${esc(assigned)}')" ondragend="onDragEnd()"`}>${assigned}</div>`:`<span style="font-size:11px;color:var(--color-text-tertiary)">${locked?'미배정':'여기에 드래그'}</span>`}</div></td><td>${conflict?'<span style="font-size:11px;color:var(--color-text-danger)">⚠ 중복</span>':''}</td></tr>`;}).join('')}</tbody></table></div></div>`;}).join('');}
+function onDragStart(event,fromKey,filename){dragSrc={fromKey,filename};event.dataTransfer.effectAllowed='move';}
+function onDragEnd(){document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('over'));}
+function onDrop(event,toKey){event.preventDefault();document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('over'));if(!dragSrc)return;const{fromKey,filename}=dragSrc;const prevInTarget=assignments[toKey]||null;if(fromKey){assignments[fromKey]=prevInTarget;assignments[toKey]=filename;}else{assignments[toKey]=filename;}dragSrc=null;renderPool();renderAssignArea();}
+function lockCombo(id){const combo=confirmedCombos.find(c=>c.id===id);let hasConflict=false;combo.channels.forEach(ch=>{const k=slotKey(id,ch);if(assignments[k]&&checkConflict(id,ch,assignments[k]))hasConflict=true;});if(hasConflict&&!confirm('충돌(⚠)이 있는 소재가 있어요. 그래도 확정할까요?'))return;lockedCombos[id]=true;renderAssignArea();}
+function unlockCombo(id){lockedCombos[id]=false;renderAssignArea();}
+function renderMaterialTab(){const has=confirmedCombos.length>0;document.getElementById('material-empty').style.display=has?'none':'block';document.getElementById('material-content').style.display=has?'block':'none';if(has){renderPool();renderAssignArea();}}
+window.onload=function(){document.getElementById('sheets-url').value=savedSheetUrl;syncSheets(savedSheetUrl);};
+</script>
+</body>
+</html>
